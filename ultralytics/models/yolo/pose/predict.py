@@ -3,7 +3,7 @@
 from ultralytics.engine.results import Results
 from ultralytics.models.yolo.detect.predict import DetectionPredictor
 from ultralytics.utils import DEFAULT_CFG, LOGGER, ops
-
+import pdb
 
 class PosePredictor(DetectionPredictor):
     """
@@ -48,6 +48,7 @@ class PosePredictor(DetectionPredictor):
             pred_kpts = pred[:, 6:].view(len(pred), *self.model.kpt_shape) if len(pred) else pred[:, 6:]
             pred_kpts = ops.scale_coords(img.shape[2:], pred_kpts, orig_img.shape)
             img_path = self.batch[0][i]
+            pdb.set_trace()
             results.append(
                 Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6], keypoints=pred_kpts))
         return results
