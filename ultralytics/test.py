@@ -5,7 +5,7 @@ def detect():
 
     # model.predict(source=0,show=True)
 
-    result =model.predict(source="D:\\test\\stand2.jpg", save=True)
+    result =model.predict(source="C:\\Users\\user\\Desktop\\train\\fall2.jpg", save=True)
 
 
 detect()
