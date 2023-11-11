@@ -78,7 +78,7 @@ class PosePredictor(DetectionPredictor):
                     start_y = output[idx][:4].cpu().numpy()[1].round()
                     # pdb.set_trace()
                     cv2.putText(orig_img, 'Fall detected', (int(start_x), int(start_y)), 0, 1, [255, 255, 0],
-                                thickness=3, lineType=cv2.LINE_AA)
+                                thickness=2, lineType=cv2.LINE_AA)
 
             # pdb.set_trace()
 
@@ -125,5 +125,5 @@ class PosePredictor(DetectionPredictor):
             # note
             # pred_kpts_part = np.column_stack((pred_kpts[0], part))
             results.append(
-                Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6], keypoints=pred_kpts))
+                Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6], keypoints=None))
         return results

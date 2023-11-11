@@ -3,9 +3,9 @@ import cv2
 def detect():
     model = YOLO('yolov8n-pose.pt')
 
-    model.predict(source=0,show=True)
+    # model.predict(source=0,show=True)
 
-    # result =model.predict(source="C:\\Users\\user\\Desktop\\train\\fall2.jpg", save=True)
+    result =model.predict(source="C:\\Users\\user\\Desktop\\train\\run\\Runner1.jpg", save=True)
 
 
 detect()
