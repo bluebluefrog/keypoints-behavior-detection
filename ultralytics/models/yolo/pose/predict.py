@@ -51,34 +51,29 @@ class PosePredictor(DetectionPredictor):
             pred_kpts = pred[:, 6:].view(len(pred), * self.model.kpt_shape) if len(pred) else pred[:, 6:]
             pred_kpts = ops.scale_coords(img.shape[2:], pred_kpts, shape)
 
-            for idx in range(pred.shape[0]):
-                # if pred.shape[0] > 0:
-                output = pred
-                # idx = i
-                left_shoulder_y = pred_kpts[idx][5][1]  # output[idx][23]
-                left_shoulder_x = pred_kpts[idx][5][0]  # output[idx][22]
-                right_shoulder_y = pred_kpts[idx][6][1]  # output[idx][26]jjj
+            for person_index in range(pred.shape[0]):
+                keypoints = pred_kpts[person_index]
+                shoulder_left_y, shoulder_left_x = keypoints[5][1], keypoints[5][0]
+                shoulder_right_y = keypoints[6][1]
 
-                left_body_y = pred_kpts[idx][11][1]  # output[idx][41]
-                left_body_x = pred_kpts[idx][11][0]  # output[idx][40]
-                right_body_y = pred_kpts[idx][12][1]  # output[idx][44]
+                body_left_y, body_left_x = keypoints[11][1], keypoints[11][0]
+                body_right_y = keypoints[12][1]
 
-                len_factor = math.sqrt(((left_shoulder_y - left_body_y) ** 2 + (left_shoulder_x - left_body_x) ** 2))
+                distance_factor = math.sqrt((shoulder_left_y - body_left_y) ** 2 + (shoulder_left_x - body_left_x) ** 2)
 
-                left_foot_y = pred_kpts[idx][15][1]  # output[idx][53]
-                right_foot_y = pred_kpts[idx][16][1]  # output[idx][56]
+                foot_left_y = keypoints[15][1]
+                foot_right_y = keypoints[16][1]
 
-                if left_shoulder_y > left_foot_y - len_factor and left_body_y > left_foot_y - (
-                        len_factor / 2) and left_shoulder_y > left_body_y - (len_factor / 2):
-                    print('person: ', idx, ' fall down')
+                if shoulder_left_y > foot_left_y - distance_factor and body_left_y > foot_left_y - (
+                        distance_factor / 2) and shoulder_left_y > body_left_y - (distance_factor / 2):
+                    print('person: ', person_index, ' fall down')
 
-                    path = self.batch[0]
-                    img_path = path[i] if isinstance(path, list) else path
-                    start_x = output[idx][:4].cpu().numpy()[0].round()
-                    start_y = output[idx][:4].cpu().numpy()[1].round()
-                    # pdb.set_trace()
-                    cv2.putText(orig_img, 'Person Fall Detected', (int(start_x), int(start_y)+30), 0, 1, [255, 255, 0],
-                                thickness=3, lineType=cv2.LINE_AA)
+                    image_path = self.batch[0][person_index] if isinstance(self.batch[0], list) else self.batch[0]
+                    start_position_x = int(pred[person_index][:4].cpu().numpy()[0].round())
+                    start_position_y = int(pred[person_index][:4].cpu().numpy()[1].round())
+
+                    cv2.putText(orig_img, 'Person Fall Detected', (start_position_x, start_position_y + 30), 0, 1,
+                                [255, 255, 0], thickness=3, lineType=cv2.LINE_AA)
 
             # pdb.set_trace()
 
