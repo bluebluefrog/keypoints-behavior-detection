@@ -77,8 +77,8 @@ class PosePredictor(DetectionPredictor):
                     start_x = output[idx][:4].cpu().numpy()[0].round()
                     start_y = output[idx][:4].cpu().numpy()[1].round()
                     # pdb.set_trace()
-                    cv2.putText(orig_img, 'Fall detected', (int(start_x), int(start_y)), 0, 1, [255, 255, 0],
-                                thickness=2, lineType=cv2.LINE_AA)
+                    cv2.putText(orig_img, 'Person Fall Detected', (int(start_x), int(start_y)+30), 0, 1, [255, 255, 0],
+                                thickness=3, lineType=cv2.LINE_AA)
 
             # pdb.set_trace()
 
